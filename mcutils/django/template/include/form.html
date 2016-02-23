@@ -1,0 +1,28 @@
+{% load widget_tweaks %}
+
+{% csrf_token %}
+<div class="hidden">
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+</div>
+
+{{ form.non_field_errors }}
+
+{% for field in form.visible_fields %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% type_label field.field as field_type %}
+        {% if field_type == 'datefield' or field_type == 'datetimefield' or field_type == 'timefield' %}
+            <div class='input-group {{ field_type }}'>
+                {% render_field field class='form-control' placeholder=field.help_text %}
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
+        {% else %}
+            {% render_field field class='form-control' data-type=field_type placeholder=field.help_text %}
+        {% endif %}
+        {% for error in field.errors %}
+            <small class="error">{{ error }}</small>
+        {% endfor %}
+    </div>
+{% endfor %}
